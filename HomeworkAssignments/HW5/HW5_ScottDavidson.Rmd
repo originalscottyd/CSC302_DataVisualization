@@ -1,0 +1,43 @@
+---
+title: "HW5_ScottDavidson_CaliWindTurbines"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+Used Geo_Spatial.R from slides 13 folder as a reference for this map
+
+```{r}
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(mapdata)
+
+# (a) Use map_data to load states and filter out California
+states <- map_data("state")
+california <- states %>% filter(region == "california")
+head(california)
+
+# (b) Select wind turbines located in California
+load('/Users/scottdavidson1/Documents/00_School/00_U of M 2022-23/00_Winter/CSC302 Data Visualization/R/Slides13_Geo_Rscripts_Data/wind_turbines.rda')
+#head(wind_ca)#find state column
+wind_ca <- wind_turbines %>%
+  filter(t_state == "CA")
+
+# (c) Use ggplot() and geom_polygon() functions to to visualize the state of California
+california_map <- ggplot(data = california) +
+  geom_polygon(aes(x = long, y = lat, group = group), fill = "steelblue", color = "white") +
+  coord_map()
+
+# (d) Use geom_point function to plot wind turbine locations in CA
+wind_turbines_map <- california_map +
+  geom_point(data = wind_ca, aes(x = xlong, y = ylat), color = "orange", alpha = 1/3) +
+  guides(fill = "none")
+
+print(wind_turbines_map)
+```
+
